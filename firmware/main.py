@@ -27,7 +27,7 @@ from hashlib import sha256
 
 # LEDs
 led_green = machine.Pin(25, machine.Pin.OUT)
-led_red = machine.Pin(1, machine.Pin.OUT)
+led_red = machine.Pin(4, machine.Pin.OUT)
 
 # Card detect
 card_detect = machine.Pin(20, machine.Pin.IN, machine.Pin.PULL_UP)
