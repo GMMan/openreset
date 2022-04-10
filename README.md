@@ -38,9 +38,9 @@ To build your own OpenReset, you will need the following:
    - Pico pin 26 to card detect. Note, if your breakout board does not have a
      card detect pin, you can connect a toggle switch or button to pin 26, and
      connect the other side to ground.
-3. Connect the red LED to Pico pin 6 (note the anode should be connect to the
-   Pico), and connect resistor to the LED (cathode side). Connect the other end
-   of the resistor to ground.
+3. Connect the red LED such that the anode end has the Pico's pin 6 upstream.
+   Connect a resistor before or after the LED, and connect the loose end of the
+   LED or resistor to ground.
 
 Carrier board
 -------------
