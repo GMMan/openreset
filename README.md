@@ -52,7 +52,7 @@ along with a few other components.
 
 Board design files are in the [carrier_board](carrier_board) directory. Gerbers
 are available in the [carrier_board/gerber](carrier_board/gerber) directory,
-and are available as a [ZIP file](carrier_board/gerber/openreset_carrier_board_v1.zip).
+and are available as a [ZIP file](carrier_board/gerber/openreset_carrier_board_v1c.zip).
 
 ### Bill of materials
 
