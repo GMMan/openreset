@@ -250,6 +250,8 @@ def do_patch():
             if not wait_write_complete(WRITE_WAIT_TIMEOUT_MS):
                 print('Write timeout while writing page 0x{:06x}'.format(sector_base + j))
                 return ERR_TIMEOUT
+        
+        curr_sector['buffer'] = None
     
     # Update checksum
     # Erase sector
