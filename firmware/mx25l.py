@@ -73,3 +73,25 @@ class MX25LDriver:
         self.spi.write(bytes([0xd8, (addr >> 16) & 0xff, (addr >> 8) & 0xff,
                               addr & 0xff]))
         self.cs.value(1)
+
+    def se(self, addr):
+        """Erase 4KB sector."""
+        self.cs.value(0)
+        self.spi.write(bytes([0x20, (addr >> 16) & 0xff, (addr >> 8) & 0xff,
+                              addr & 0xff]))
+        self.cs.value(1)
+
+    def pp(self, addr, buf):
+        """
+        Programs page.
+        
+        Note: buffer must remain within page boundaries.
+        """
+        if addr % 256 + len(buf) > 256:
+            raise ValueError("Buffer cannot cross into next page")
+        
+        self.cs.value(0)
+        self.spi.write(bytes([0x02, (addr >> 16) & 0xff, (addr >> 8) & 0xff,
+                              addr & 0xff]))
+        self.spi.write(buf)
+        self.cs.value(1)

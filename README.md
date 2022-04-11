@@ -1,9 +1,10 @@
 OpenReset Project
 =================
 
-This project is designed to allow you to easily reset your card with a
-standalone device. No need to connect to a computer to use (in fact you can't
-read the card from a computer using this device).
+This edition of OpenReset is designed to patch the crash-prone Renamon GP and
+Monodramon GP Digimon DimCARDs so they won't crash due to the data error. This
+device is standalone, and requires no computer to use once the firmware has
+been loaded.
 
 DIY hardware
 ------------
@@ -87,7 +88,7 @@ Usage
 -----
 
 The board is easy to use. All you have to do is insert your card and the device
-will automatically perform the erase. The red LED will always be on to indicate
+will automatically patch the card. The red LED will always be on to indicate
 power, and the green LED on the Pi Pico will light up when the erase is in
 progress. After the erase is completed, the green LED will extinguish. If there
 is an error, the red LED will blink off a number of times to indicate the error.
@@ -96,6 +97,14 @@ is an error, the red LED will blink off a number of times to indicate the error.
 - 2 times: wrong flash chip; if you are sure your card is genuine, file an
   issue in this repo
 - 3 times: card is not responding as expected
+- 4 times: there are no patches for this card
+- 5 times: the card checksum differs from what is expected
+- 6 times: the card is not the same as the card being patched when patching
+  was interrupted
+
+If you get an error while the card is being patched, you can reinsert the same
+card to resume patching. The current card must be completed patching before
+you can insert a different card.
 
 There are messages printed to UART if you need more info on troubleshooting.
 I suggest loading the code up in Thonny and checking the shell for the
