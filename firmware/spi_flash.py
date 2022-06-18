@@ -17,7 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with OpenReset.  If not, see <https://www.gnu.org/licenses/>.
 
-class MX25LDriver:
+class SPIFlashDriver:
+    """
+    Base SPI NOR flash driver, can be used as a generic driver.
+    """
     def __init__(self, spi, cs):
         self.spi = spi
         self.cs = cs
@@ -31,17 +34,9 @@ class MX25LDriver:
         return resp
 
     def rdsr(self):
-        """Read and return the status register."""
+        """Read and return the status register (only first byte)."""
         self.cs.value(0)
         self.spi.write(b'\x05')
-        resp = self.spi.read(1)[0]
-        self.cs.value(1)
-        return resp
-
-    def rdcr(self):
-        """Read and return the configuration register."""
-        self.cs.value(0)
-        self.spi.write(b'\x15')
         resp = self.spi.read(1)[0]
         self.cs.value(1)
         return resp
@@ -50,12 +45,6 @@ class MX25LDriver:
         """Set write enable latch."""
         self.cs.value(0)
         self.spi.write(b'\x06')
-        self.cs.value(1)
-
-    def wrsr(self, sr, cr):
-        """Write the status and configuration registers."""
-        self.cs.value(0)
-        self.spi.write(bytes([0x01, sr, cr]))
         self.cs.value(1)
 
     def read(self, addr, count):
@@ -67,9 +56,43 @@ class MX25LDriver:
         self.cs.value(1)
         return resp
 
+    def pp(self, addr, data):
+        """Program a page."""
+        self.cs.value(0)
+        self.spi.write(bytes([0x02, (addr >> 16) & 0xff, (addr >> 8) & 0xff,
+                              addr & 0xff]))
+        self.spi.write(data)
+        self.cs.value(1)
+
     def be(self, addr):
         """Erase 64KB block."""
         self.cs.value(0)
         self.spi.write(bytes([0xd8, (addr >> 16) & 0xff, (addr >> 8) & 0xff,
                               addr & 0xff]))
+        self.cs.value(1)
+
+    def se(self, addr):
+        """Erase 4KB sector."""
+        self.cs.value(0)
+        self.spi.write(bytes([0x20, (addr >> 16) & 0xff, (addr >> 8) & 0xff,
+                              addr & 0xff]))
+        self.cs.value(1)
+
+
+class MX25LDriver(SPIFlashDriver):
+    """
+    Macronix MX25L* SPI NOR flash driver
+    """
+    def rdcr(self):
+        """Read and return the configuration register."""
+        self.cs.value(0)
+        self.spi.write(b'\x15')
+        resp = self.spi.read(1)[0]
+        self.cs.value(1)
+        return resp
+
+    def wrsr(self, sr, cr):
+        """Write the status and configuration registers."""
+        self.cs.value(0)
+        self.spi.write(bytes([0x01, sr, cr]))
         self.cs.value(1)

@@ -5,6 +5,12 @@ This project is designed to allow you to easily reset your card with a
 standalone device. No need to connect to a computer to use (in fact you can't
 read the card from a computer using this device).
 
+Supported cards:
+- Vital Bracelet Dim
+- Vital Bracelet Memory (VBM)
+- TamaSma Card
+- PreData Memory (for Heart Cure Watch, unreleased as of writing)
+
 DIY hardware
 ------------
 
@@ -100,6 +106,11 @@ is an error, the red LED will blink off a number of times to indicate the error.
 There are messages printed to UART if you need more info on troubleshooting.
 I suggest loading the code up in Thonny and checking the shell for the
 messages.
+
+**Warning:** TamaSma Card locking area is embedded in the card header. By
+nature of SPI NOR flash, changing this data will involve erasing the sector,
+so there is a risk of breaking the data if the connection is bad. Therefore,
+be careful when plugging in a TamaSma Card to plug it in firmly.
 
 If your are using a DIY build and your microSD breakout board does not have a
 card detect pin, then you can use the switch/button alternative. Flip the
