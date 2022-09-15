@@ -163,14 +163,6 @@ class PreDataMemoryResetter:
     def do_reset(self):
         print('Starting process')
 
-        # Erase pages
-        for addr in self.ERASE_ADDRS:
-            self.flash.wren()
-            self.flash.se(addr)
-            if not common.wait_write_complete(self.flash, common.WRITE_WAIT_TIMEOUT_MS):
-                print('Write timeout while erasing page address 0x{:06x}'.format(addr))
-                return common.ERR_TIMEOUT
-
         # Clear lock sectors with zeroes
         zeros = bytearray(0x100)
         for i in range(0xfd000, 0x100000, 0x100):
