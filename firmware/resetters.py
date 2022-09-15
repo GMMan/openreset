@@ -154,6 +154,7 @@ class TamaSmaCardResetter:
 
 class PreDataMemoryResetter:
     ID_HASH = b'\xda\x15\x3a\x43\x7d\x99\xe0\x78\x91\xfc\xc7\x73\x46\xd6\x7a\x0c\xde\x9c\x75\xa1\x44\x80\x28\x37\x01\xc8\xe2\x8b\x51\xa6\x0b\x74'
+    FLASH_ID = b'\xc8\x40\x14'  # GD25Q80E
     ERASE_ADDRS = [0xfd000, 0xfe000, 0xff000]
 
     def __init__(self, spi, cs) -> None:
@@ -170,7 +171,14 @@ class PreDataMemoryResetter:
                 print('Write timeout while erasing page address 0x{:06x}'.format(addr))
                 return common.ERR_TIMEOUT
 
-            # Don't know yet if unused card has zeroes here, so we won't try to write zeroes
+        # Clear lock sectors with zeroes
+        zeros = bytearray(0x100)
+        for i in range(0xfd000, 0x100000, 0x100):
+            self.flash.wren()
+            self.flash.pp(i, zeros)
+            if not common.wait_write_complete(self.flash, common.WRITE_WAIT_TIMEOUT_MS):
+                print('Write timeout while programming page 0x{:06x}'.format(i))
+                return common.ERR_TIMEOUT
 
         # Done!
         print('Process complete')
@@ -188,6 +196,11 @@ class PreDataMemoryResetter:
             # print(hexlify(id_data))
             return common.ERR_WRONG_CARD
 
-        # Don't know yet what chip it's on, so we won't check that
+        # Check flash ID
+        flash_id = flash.rdid()
+        if flash_id != cls.FLASH_ID:
+            # print('Flash ID didn\'t match. Read ID:')
+            # print(hexlify(flash_id))
+            return common.ERR_WRONG_FLASH_ID
 
         return common.ERR_OK
